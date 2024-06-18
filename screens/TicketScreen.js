@@ -1,9 +1,69 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import React from "react";
-import { useRoute } from "@react-navigation/native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  Pressable,
+  Alert,
+  BackHandler,
+} from "react-native";
+import React, { useEffect, useLayoutEffect } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import SvgQRCode from "react-native-qrcode-svg";
 
 const TicketScreen = () => {
   const route = useRoute();
+  const navigation = useNavigation();
+
+  const cart = useSelector((state) => state.cart.cart);
+  const total = cart
+    .map((item) => item.price * item.quantity)
+    .reduce((curr, prev) => curr + prev, 0);
+
+  const ticketPrice = route.params.selectedSeats.length * 220;
+  const fee = 87;
+  const grandTotal = ticketPrice + fee + total;
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      gestureEnabled: false,
+      gestureDirection: "horizontal",
+    });
+  }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      const createTwoButtonAlert = () =>
+        Alert.alert(
+          "Want to end Session",
+          "Go Back to Msin Screen",
+          [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            {
+              text: "OK",
+              onPress: () =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "HomeScreen" }],
+                }),
+            },
+          ],
+          { cancelable: false }
+        );
+
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
+      return () => backHandler.remove();
+    };
+  }, []);
+
   return (
     <SafeAreaView>
       <View
@@ -38,9 +98,9 @@ const TicketScreen = () => {
             borderStyle: "dashed",
             marginTop: 8,
             height: 1,
-            marginLeft:8,
-            marginRight:8,
-            height:1,
+            marginLeft: 8,
+            marginRight: 8,
+            height: 1,
           }}
         />
 
@@ -75,18 +135,169 @@ const TicketScreen = () => {
             borderStyle: "dashed",
             marginTop: 4,
             height: 1,
-            marginLeft:8,
-            marginRight:8,
-            height:1,
-
+            marginLeft: 8,
+            marginRight: 8,
+            height: 1,
           }}
         />
-        <View style={{marginHorizontal:10,marginTop:7,}}>
-            <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
-                <Text>AUDI 3</Text> 
-                <Text style={{color:"gray",fontWeight:"500"}}>{route.params.seats.length} Tickets</Text>
-            </View>
+        <View style={{ marginHorizontal: 10, marginTop: 7 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text>AUDI 3</Text>
+            <Text style={{ color: "gray", fontWeight: "500", color: "white" }}>
+              {route.params.seats.length} Tickets
+            </Text>
+          </View>
         </View>
+
+        <View style={{ marginHorizontal: 10, marginTop: 7 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text>SEATS</Text>
+            <Text style={{ color: "gray", fontWeight: "500", color: "red" }}>
+              {route.params.selectedSeats} Tickets
+            </Text>
+          </View>
+        </View>
+
+        <Text
+          style={{
+            borderColor: "#DCDCDC",
+            borderWidth: 0.5,
+            borderStyle: "dashed",
+            marginTop: 7,
+            height: 1,
+            marginLeft: 8,
+            marginRight: 8,
+            height: 1,
+          }}
+        />
+
+        <View
+          style={{
+            backgroundColor: "#FF6347",
+            borderRadius: 6,
+            margin: 10,
+            padding: 10,
+          }}
+        >
+          <Text style={{ fontSize: 15, fontWeight: "500", color: "white" }}>
+            Price Details
+          </Text>
+
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 15, color: "white" }}>TOTAL</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 17, color: "white" }}>
+              ₹{grandTotal}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 15, color: "white" }}>
+              TICKETS {route.params.seats.length}
+            </Text>
+            <Text style={{ fontSize: 15, color: "white" }}>
+              ₹{route.params.seats.length * 220}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 15, color: "white" }}>
+              FOOD AND BEVERAGES
+            </Text>
+            <Text style={{ fontSize: 15, color: "white" }}>₹{total}</Text>
+          </View>
+
+          <View
+            style={{
+              marginTop: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Text style={{ fontSize: 15, color: "white" }}>
+              Convenience Fee
+            </Text>
+            <Text style={{ fontSize: 15, color: "white" }}>₹87</Text>
+          </View>
+        </View>
+
+        {/* QR CODE  */}
+
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 10,
+            marginBottom: 20,
+          }}
+        >
+          <SvgQRCode value={"hello"} />
+        </View>
+
+        <Text style={{ fontSize: 16, fontWeight: "500", textAlign: "center" }}>
+          W33JNK3
+        </Text>
+        <Text
+          style={{
+            borderRadius: 1,
+            borderStyle: "dashed",
+            borderColor: "#DCDCDC",
+            height: 1,
+            borderWidth: 0.5,
+            margin: 10,
+          }}
+        />
+
+        <Pressable
+          onPress={() =>
+            navigation.reset({ index: 0, routes: [{ name: "HomeScreen" }] })
+          }
+          style={{
+            backgroundColor: "#FF6347",
+            padding: 10,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <Text
+            style={{ color: "white", textAlign: "center", fontWeight: "500" }}
+          >
+            Return
+          </Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
