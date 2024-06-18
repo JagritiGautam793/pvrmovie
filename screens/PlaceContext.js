@@ -11,10 +11,10 @@ import { createContext, useState } from "react";
 const Place = createContext();
 const PlaceContext = ({ children }) => {
   const [selectedCity, setselectedCity] = useState("");
-  // const [locationId,setlocationId]=useState("")
+  const [locationId,setlocationId]=useState("")
 
   return (
-    <Place.Provider value={{ selectedCity, setselectedCity}}>
+    <Place.Provider value={{ selectedCity, setselectedCity,locationId,setlocationId}}>
       {/* Provider will take us in all of the children located places */}
 
       {children}

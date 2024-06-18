@@ -10,6 +10,9 @@ import { Ionicons } from "@expo/vector-icons";
 import PlacesScreen from "../screens/PlacesScreen";
 import MovieScreen from "../screens/MovieScreen";
 import TheatreScreen from "../screens/TheatreScreen";
+import FoodScreen from "../screens/FoodScreen";
+import ConfirmationScreen from "../screens/ConfirmationScreen";
+import TicketScreen from "../screens/TicketScreen";
 
 // initialising the stacks
 const ProfileStack = createNativeStackNavigator();
@@ -24,6 +27,11 @@ function HomeStackScreens() {
       <HomeStack.Screen name="Places" component={PlacesScreen}/>
       <HomeStack.Screen name="Movie" component={MovieScreen}/>
       <HomeStack.Screen name="Theatre" component={TheatreScreen}/>
+      <HomeStack.Screen name="Food" component={FoodScreen} options={{title:""}}/>
+      <HomeStack.Screen name="Confirmation" component={ConfirmationScreen} />
+      <HomeStack.Screen name="Ticket" component={TicketScreen} />
+
+
     </HomeStack.Navigator>
   );
 }

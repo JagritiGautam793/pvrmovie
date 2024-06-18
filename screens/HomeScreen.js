@@ -50,7 +50,7 @@ const HomeScreen = () => {
     } 
     fetchData();
   },[]) 
-  console.log(moviesData)
+  // console.log(moviesData)
 
 
 
@@ -389,7 +389,7 @@ const HomeScreen = () => {
       vote_count: 1,
     },
   ];
-  const [sortedData,setSortedData]=useState(data); 
+  const [sortedData,setSortedData]=useState([]); 
 
 
   //   useEffect in order to initialize the animation thing so that it work out from right to left in loop

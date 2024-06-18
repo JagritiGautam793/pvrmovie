@@ -23,7 +23,8 @@ const MovieCard = ({item}) => {
         </View> 
         <Pressable
         onPress={()=>navigation.navigate("Movie",{
-          title:item.title
+          title:item.title,
+          movieId:item._id
         })}
          style={{backgroundColor:"#ffc40c",padding:10,borderRadius:6,marginRight:10,width:100,marginTop:10 }}>
                 <Text style={{textAlign:"center",fontSize:15,fontWeight:"500"}}>BOOK</Text>

@@ -12,6 +12,7 @@ import Calendar from "../components/Calendar";
 import moment from "moment";
 import { Place } from "./PlaceContext";
 import { PlaceContext } from "./PlaceContext";
+import { client } from "../pvr/sanity";
 
 const MovieScreen = () => {
   const navigation = useNavigation();
@@ -701,6 +702,7 @@ const MovieScreen = () => {
       ],
     },
   ];
+  console.log(locationId);
   // trying to fetch the theatres based on the location
   const [reqData, setreqData] = useState([]);
 
@@ -721,7 +723,10 @@ const MovieScreen = () => {
       );
       setreqData(response);
     };
+    fetchTheatres();
   }, []);
+
+  console.log(reqData);
 
   return (
     <View>
@@ -729,58 +734,58 @@ const MovieScreen = () => {
         <Calendar selected={selectedDate} onSelectDate={setSelectedDate} />
       </ScrollView>
 
-      {malls
-        .filter((item) => item.place === selectedCity)
-        .map((item) =>
-          item.galleria.map((multiplex, index) => (
-            <Pressable
-            key={`${item.id}-${multiplex.id}`}
-              onPress={() => setMall(multiplex.name)}
-              style={{ marginHorizontal: 20, marginVertical: 10 }}
-            >
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>
-                {multiplex.name}{" "}
-              </Text>
-              {mall.includes(multiplex.name) ? (
-                <FlatList
-                  numColumns={3}
-                  data={multiplex.showtimes}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate("Theatre", {
-                          name: route.params.title,
-                          selectedDate: selectedDate,
-                          mall: mall,
-                          showtime: item,
-                        })
-                      }
+      {reqData
+        // .filter((item) => item.place === selectedCity)
+        .map((item, index) => (
+          <Pressable
+            key={index}
+            onPress={() => setMall(item.name)}
+            style={{ marginHorizontal: 20, marginVertical: 10 }}
+          >
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>{item.name}</Text>
+            {mall.includes(item.name) ? (
+              <FlatList
+                numColumns={3}
+                data={item.showtimes}
+                renderItem={({ item, index }) => (
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate("Theatre", {
+                        name: route.params.title,
+                        mall: mall,
+                        showtime: item.time,
+                        selectedDate:selectedDate,
+                        // backend part
+                        rows: item.row,
+                        docId: item._id,
+                        showtimeId: index,
+                      })
+                    }
+                    style={{
+                      borderColor: "green",
+                      borderWidth: 0.7,
+                      padding: 5,
+                      width: 85,
+                      borderRadius: 3,
+                      margin: 8,
+                    }}
+                  >
+                    <Text
                       style={{
-                        borderColor: "green",
-                        borderWidth: 0.7,
-                        padding: 5,
-                        width: 85,
-                        borderRadius: 3,
-                        margin: 8,
+                        textAlign: "center",
+                        color: "green",
+                        fontSize: 15,
+                        fontWeight: "500",
                       }}
                     >
-                      <Text
-                        style={{
-                          textAlign: "center",
-                          color: "green",
-                          fontSize: 15,
-                          fontWeight: "500",
-                        }}
-                      >
-                        {item}
-                      </Text>
-                    </Pressable>
-                  )}
-                />
-              ) : null}
-            </Pressable>
-          ))
-        )}
+                      {item.time}
+                    </Text>
+                  </Pressable>
+                )}
+              />
+            ) : null}
+          </Pressable>
+        ))}
     </View>
   );
 };
