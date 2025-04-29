@@ -1,4 +1,4 @@
-# PVR Movie Booking App
+# PVRGO
 
 A React Native mobile application for booking movie tickets and snacks at PVR Cinemas. Built with Expo, Redux, and Sanity CMS.
 
